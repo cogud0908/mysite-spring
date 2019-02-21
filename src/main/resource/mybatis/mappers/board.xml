@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="getCount" parameterType = "string" resultType = "int">
+		<![CDATA[
+			select count(*)
+			from board
+		]]>
+		<!-- 값을 제한할때 -->
+		<if test="_parameter != null and _parameter!=''">
+			where title like '%${search}%'
+		</if>
+	</select>
+	
+	<select id="getReply" parameterType = "int" resultType = "boardvo">
+		<![CDATA[
+			select no, title
+			from board
+			where no = #{no}
+		]]>
+	</select>
+	
+	<select id="view" parameterType = "int" resultType = "boardvo">
+		<![CDATA[
+			select no, title, contents, user_no
+			from board 
+			where no = #{no};
+		]]>
+	</select>
+	
+	<update id="hit" parameterType = "int">
+		<![CDATA[
+			update board
+			set hit = hit+1 
+			where no = #{no};
+		]]>
+	</update>
+	
+	<update id="modify" parameterType = "boardvo">
+		<![CDATA[
+			update board 
+			set title = #{title}, contents = #{contents}
+			where no = #{no}
+		]]>
+	</update>
+		
+	<insert id="insert" parameterType="boardvo">
+		
+		<![CDATA[
+			insert into board
+			values(null, #{title} , #{contents} ,now(),0,ifnull((select max(g_no)+1 from board a),1),1,0,#{user_no})
+		]]>
+		
+	</insert>
+			
+	<select id="replyInsertSelect" parameterType="int" resultType="boardvo">
+		<![CDATA[
+			select g_no, o_no, depth 
+			from board 
+			where no = #{no}
+		]]>
+	</select>
+		
+	<update id="replyInsertUpdate" parameterType="boardvo">
+		<![CDATA[
+			update board set o_no = o_no+1 
+			where g_no = #{g_no} and o_no >= (#{o_no}+1)
+		]]>
+	</update>
+	
+	<insert id="replyInsert" parameterType="boardvo">
+		<![CDATA[
+			insert into board 
+			values(null, #{title} , #{contents} ,now(),0,#{g_no},#{o_no},#{depth},#{user_no});
+		]]>
+	</insert>
+	
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			delete from board 
+			where no= #{board_no}
+		]]>
+	</delete>
+	
+	<select id = "getlist" resultType = "boardvo" parameterType="map">
+		<![CDATA[
+			select a.no, title, contents, hit, g_no, o_no, depth, user_no, 
+			date_format(write_date, '%Y-%m-%d %h:%i:%s') as write_date, b.name
+			from board a, user b
+			where a.user_no = b.no
+			and title like '%${search}%'
+			group by a.no
+			order by g_no desc , o_no asc
+			
+		]]>
+		<if test="page == 1">
+			limit 10 offset 0
+		</if>
+		<if test="page != 1">
+			limit 10 offset (#{page}-1)*10
+		</if>
+	</select>
+</mapper>
