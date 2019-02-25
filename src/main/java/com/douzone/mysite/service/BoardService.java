@@ -43,7 +43,7 @@ public class BoardService {
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("search", search);
-		map.put("page", page);
+		map.put("page", (page-1)*10);
 		
 		List<BoardVo> list = boardDao.getList(map);
 		

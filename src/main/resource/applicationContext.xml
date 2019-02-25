@@ -26,9 +26,11 @@
 	<!-- Connection Pool DataSource-->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://localhost:3306/webdb" />
+		<property name="url" value="jdbc:mysql://localhost:3306/webdb?characterEncoding=utf8&amp;aserverTimezone=UTC" />
 		<property name="username" value="webdb" />
 		<property name="password" value="webdb" />
+		<property name="initialSize" value="20" />
+		<property name="maxActive" value="20" />
 	</bean>
 
 	<!-- MyBatis SqlSessionFactoryBean --> 

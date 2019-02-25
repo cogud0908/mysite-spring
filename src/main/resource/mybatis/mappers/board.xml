@@ -92,13 +92,8 @@
 			and title like '%${search}%'
 			group by a.no
 			order by g_no desc , o_no asc
-			
-		]]>
-		<if test="page == 1">
-			limit 10 offset 0
-		</if>
-		<if test="page != 1">
-			limit 10 offset (#{page}-1)*10
-		</if>
+			limit 10 offset #{page}
+		]]>		
 	</select>
+	
 </mapper>

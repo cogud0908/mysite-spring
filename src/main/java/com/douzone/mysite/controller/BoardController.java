@@ -31,7 +31,9 @@ public class BoardController {
 	private MessageService messageService;
 	
 	@RequestMapping({"","/list"})
-	public ModelAndView list(@RequestParam(value="search", required=false) String search, @RequestParam(value="page", required=false) String page) {
+	public ModelAndView list(
+			@RequestParam(value="search", required=false) String search, 
+			@RequestParam(value="page", required=false) String page) {
 		if(page == null) page = "1";
 		if(search == null) search = "";
 		
