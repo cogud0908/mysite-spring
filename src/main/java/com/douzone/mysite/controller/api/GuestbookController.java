@@ -26,8 +26,8 @@ public class GuestbookController {
 	
 	@ResponseBody
 	@RequestMapping("/ajax")
-	public JSONResult ajaxList() {
-		List<GuestbookVo> list = GuestbookService.ajaxList();
+	public JSONResult ajaxList(@RequestParam(value="p", required = true) String page) {
+		List<GuestbookVo> list = GuestbookService.ajaxList(Integer.parseInt(page));
 								
 		return JSONResult.success(list);
 	}

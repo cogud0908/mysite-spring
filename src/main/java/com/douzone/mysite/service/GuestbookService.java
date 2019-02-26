@@ -26,8 +26,8 @@ public class GuestbookService {
 		guestbookDao.delete(vo);
 	}
 
-	public List<GuestbookVo> ajaxList() {
-		List<GuestbookVo> list = guestbookDao.getList();
+	public List<GuestbookVo> ajaxList(int page) {
+		List<GuestbookVo> list = guestbookDao.getList(page);
 		return list;
 	}
 	

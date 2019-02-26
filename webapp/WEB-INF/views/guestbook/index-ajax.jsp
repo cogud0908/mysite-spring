@@ -78,7 +78,7 @@ var fetchList = function()
 	
 	++page,
 	$.ajax({
-		url: "${pageContext.request.contextPath }/api/guestbook/ajax",
+		url: "${pageContext.request.contextPath }/api/guestbook/ajax?p=" + page,
 		type: "get",
 		dataType: "json",
 		data:"",
@@ -90,10 +90,10 @@ var fetchList = function()
 			
 			console.log(response.data);
 			// 페이지 끝 검사
-			/* if(response.data.length < 5){
+			if(response.data.length < 5){
 				isEnd = true;
 				$("#btn-next").prop("disalbed", true);
-			} */
+			} 
 			
 			// rendering
 			$.each(response.data, function(index, vo){

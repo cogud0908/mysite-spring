@@ -18,7 +18,16 @@
 		<![CDATA[
 			select no, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate
 			from guestbook
+			order by regdate desc
+		]]>
+	</select>
+	
+	<select id = "getlist-ajax" parameterType="int" resultType = "guestbookvo">
+		<![CDATA[
+			select no, name, message, date_format(reg_date, '%Y-%m-%d %h:%i:%s') as regDate
+			from guestbook
 			order by reg_date desc
+			limit #{page} , 5 
 		]]>
 	</select>
 	

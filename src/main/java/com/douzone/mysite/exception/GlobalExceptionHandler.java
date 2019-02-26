@@ -10,11 +10,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.ModelAndView;
+
 
 import com.douzone.mysite.dto.JSONResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 	
-	@ExceptionHandler(UserDaoException.class)
+	@ExceptionHandler(Exception.class)
 	public void handlerExcpetion(HttpServletRequest request, HttpServletResponse response ,Exception e) throws ServletException, IOException {
 		// 1. 로깅작업
 		StringWriter errors = new StringWriter();
@@ -50,7 +48,7 @@ public class GlobalExceptionHandler {
 		} else { // HTML 응답
 			request.setAttribute("uri", request.getRequestURI());
 			request.setAttribute("exception", errors.toString());
-			request.getRequestDispatcher("/WEB-INF/vies/error/exception.jsp").forward(request, response);
+			request.getRequestDispatcher("/WEB-INF/views/error/exception.jsp").forward(request, response);
 		}
 		
 	}

@@ -339,7 +339,7 @@ public class GuestbookDao {
 	}
 
 	public List<GuestbookVo> getList(int page) {
-		List<GuestbookVo> list = sqlSession.selectList("guestbook.getlist-ajax",page);
+		List<GuestbookVo> list = sqlSession.selectList("guestbook.getlist-ajax",(page-1)*5);
 		return list;
 	}
 
