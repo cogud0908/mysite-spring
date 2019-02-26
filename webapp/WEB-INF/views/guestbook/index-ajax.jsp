@@ -56,7 +56,7 @@ var render = function(vo, mode){
 	var htmls = 
 		"<li data-no='"+vo.no+"'>" +
 		"<strong>"+vo.name+"</strong>"+
-		"<p>"+vo.message.replace(/\n/g,"<br>")+"</p>"+
+		"<p>"+vo.message+"</p>"+
 		"<strong></strong>"+
 		"<a href='' data-no='"+vo.no+"'>삭제</a>"+ 
 		"</li>";
@@ -78,7 +78,7 @@ var fetchList = function()
 	
 	++page,
 	$.ajax({
-		url: "/mysite2/api/guestbook?a=ajax-list&p=" + page,
+		url: "${pageContext.request.contextPath }/api/guestbook/ajax",
 		type: "get",
 		dataType: "json",
 		data:"",
@@ -90,15 +90,15 @@ var fetchList = function()
 			
 			console.log(response.data);
 			// 페이지 끝 검사
-			if(response.data.length < 5){
+			/* if(response.data.length < 5){
 				isEnd = true;
 				$("#btn-next").prop("disalbed", true);
-			}
+			} */
 			
 			// rendering
 			$.each(response.data, function(index, vo){
 				render(vo, false);
-			});
+			}); 
 		},
 		error: function(xhr, status, e){
 			console.error(status + ":"+ e);
@@ -114,13 +114,13 @@ $(function(){
 			// 삭제시 작업
 			"삭제": function(){
 				$.ajax({
-					url: "/mysite2/api/guestbook?a=ajax-delete&no="+deleteNo,
+					url: "${pageContext.request.contextPath }/api/guestbook/ajax/delete?no="+deleteNo,
 					type: "get",
 					dataType: "json",
 					data: "password="+$("#password-delete").val(),
 					success: function(response){
 						
-						if(response.result == true){
+						if(response.data == true){
 							messageBox("삭제 완료","삭제가 완료되었습니다.");
 							$("#list-guestbook li[data-no="+deleteNo+"]").remove();
 							$("#password-delete").val("");
@@ -173,18 +173,18 @@ $(function(){
 		}
 		
 		$.ajax({
-			url: "/mysite2/api/guestbook?a=ajax-insert",
+			url: "${pageContext.request.contextPath }/api/guestbook/ajax/insert",
 			type: "get",
 			dataType: "json",
 			data: encodeURI("name="+$("#input-name").val()+"&message="+$("#tx-content").val()+"&password="+$("#input-password").val()),
 			success: function(response){
 				
 				messageBox("게시글 등록","게시글이 등록되었습니다.");
-				
+								
 				render(response.data, true);
 				$("#input-name").val("");
 				$("#input-password").val("");
-				$("#tx-content").val("");
+				$("#tx-content").val("");				
 			},
 			error: function(xhr, status, e){
 				console.error(status + ":"+ e);

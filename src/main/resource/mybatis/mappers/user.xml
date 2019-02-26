@@ -6,23 +6,31 @@
 		<![CDATA[ 
 			insert 
 			into user
-			values ( null, #{name}, #{email}, #{password}, #{gender}, now() )
+			values ( null, #{name}, #{email}, #{password}, #{gender}, now() , #{role})
 		]]>
 	</insert>
 	
 	<select id="getByEmailAndPassword" parameterType="map" resultType="uservo">
 		<![CDATA[
-			select no, name, email
+			select no, name, email, role
 			from user
 			where email = #{email} 
 			and password = #{password}
 		]]>
 	</select>
-	<select id="getByEmail" parameterType="string" resultType="uservo">
+	<select id="getByEmail" parameterType="int" resultType="uservo">
 		<![CDATA[
-			select no, name 
+			select no, email 
 			from user 
-			where email = #{email}
+			where no = #{no}
+		]]>
+	</select>
+	
+	<select id="getEmail" parameterType="string" resultType="uservo">
+		<![CDATA[
+			select no, email 
+			from user 
+			where no = #{email}
 		]]>
 	</select>
 	

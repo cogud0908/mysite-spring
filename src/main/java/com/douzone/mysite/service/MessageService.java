@@ -17,6 +17,7 @@ public class MessageService {
 	private MessageDao messageDao;
 
 	public void message(MessageVo messageVo) {
+		System.out.println(messageVo);
 		messageDao.Insert(messageVo);
 	}
 

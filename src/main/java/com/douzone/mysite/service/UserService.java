@@ -20,11 +20,22 @@ public class UserService {
 		// 2. email 주소 확인하는 메일 보내기
 	
 	}
-	public UserVo login(UserVo userVo) {
-		UserVo resultVo = userDao.login(userVo.getEmail(),userVo.getPassword());
+	public UserVo login(String email, String password) {
+		UserVo resultVo = userDao.login(email, password);
 		return resultVo;
 	}
 	public void modify(UserVo userVo) {
 		userDao.update(userVo);
+	}
+	
+	public UserVo getUser(int no) {
+		UserVo userVo = userDao.get(no);
+		return userVo;
+	}
+	public boolean existEmail(String email) {
+		UserVo userVo = userDao.get(email);
+		if(userVo == null)
+			return false;
+		return true;
 	}		
 }

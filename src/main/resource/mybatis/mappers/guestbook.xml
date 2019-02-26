@@ -29,4 +29,13 @@
 			and password = #{password}
 		]]>
 	</delete>
+	
+	<select id = "getOne-ajax" resultType = "guestbookvo">
+		<![CDATA[
+			select no, name, message
+			from guestbook
+			where no = last_insert_id()
+		]]>
+	</select>
+	
 </mapper>

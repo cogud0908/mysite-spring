@@ -18,7 +18,6 @@ public class GuestbookService {
 		List<GuestbookVo> list = guestbookDao.getList();
 		return list;
 	}
-
 	public void insert(GuestbookVo vo) {
 		guestbookDao.insert(vo);
 	}
@@ -26,6 +25,14 @@ public class GuestbookService {
 	public void delete(GuestbookVo vo) {
 		guestbookDao.delete(vo);
 	}
+
+	public List<GuestbookVo> ajaxList() {
+		List<GuestbookVo> list = guestbookDao.getList();
+		return list;
+	}
 	
-	
+	public GuestbookVo ajaxInsert(GuestbookVo vo) {
+		GuestbookVo guestbookvo = guestbookDao.ajaxinsert(vo);
+		return guestbookvo;
+	}
 }

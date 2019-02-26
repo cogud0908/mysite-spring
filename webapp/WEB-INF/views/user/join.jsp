@@ -11,80 +11,103 @@
 <script type="text/javascript" src="${pageContext.servletContext.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
-$(function(){
-	$("#join-form").submit(function(){
-		// 1. 이름 체크
-		if($("#name").val() == ""){
-			alert("이름은 필수 입력 항목입니다.");
-			$("#name").focus();
-			return false;
-		}
+var FormValidator = {
+		$imageCheck: null,
+		$buttonCheckEmail: null,
+		$inputTextEmail: null,
 		
-		// 2-1. 이메일이 비어 있는 지 확인
-		if($("#email").val() == ""){
-			alert("이메일은 필수 입력 항목입니다.");
-			$("#email").focus();
-			return false;
-		}
-		// 2-2. 이메일 중복체크 유무
-		//if($("#img-checkemail").is(":visible") == false){
-		//	alert("이메일 중복 체크를 해야합니다!");
-		//  return false;
-		//}
-				
-		// 3. 비밀번호 확인
-		if($("input[type='password']").val() == ""){
-			alert("비밀번호는 필수 입력 항목입니다.");
-			$("#password").focus();
-			return false;
-		}
-		
-		// 4. 약관동의
-		if($("#agree-prov").is(":checked") == false){
-			alert("약관동의를 해주세요.");
-			$("#agree-prov").focus();
-			return false;
-		}
-		
-		return true;
-	});
-	
-	$("#btn-checkemail").click(function(){
-		var email = $("#email").val();
-		
-		// 2-1. 이메일이 비어 있는 지 확인
-		if(email == ""){
-			alert("이메일은 필수 입력 항목입니다.");
-			$("#email").focus();
-			return;
-		}
-		
-		$.ajax({
-			url:"${pageContext.servletContext.contextPath }/api/user",
-			type:"get",
-			dataType:"json",
-			data:"a=ajax-checkemail&email="+email,
-			success: function(response){
-				if(response.exist == true){
-					alert("이미 존재하는 이메일입니다. 다른 이메일을 사용해 주세요.");
-					$("#email").val("").focus();
-					return;
-				}
-				
-				// 사용가능한 이메일
-				$("#btn-checkemail").hide();
-				$("#img-checkemail").show();
-				$("#email").attr("disabled","true");
-			},
-			error: function(xhr, status, e){
-				console.log(status + ":"+ e);
+		init: function() {
+			this.$imageCheck = $( "#img-checkemail" );
+			this.$buttonCheckEmail = $( "#btn-checkemail" );
+			this.$inputTextEmail = $( "#email" );
+			
+			this.$inputTextEmail.change( this.onEmailInputTextChanged.bind( this ) );
+			this.$buttonCheckEmail.click( this.onCheckEmailButtonClicked.bind( this ) );
+			$( "#join-form" ).submit( this.onFormSubmit.bind( this ) );		
+		},
+		onEmailInputTextChanged: function() {
+			this.$imageCheck.hide();
+			this.$buttonCheckEmail.show();		
+		},	
+		onCheckEmailButtonClicked: function( event ) {
+			console.log( event.currentTarget );
+			
+			var email = this.$inputTextEmail.val();
+			if( email === "" ) {
+				return;
 			}
-		});
-		
-	});
-	
+			
+			//ajax 통신
+			$.ajax( {
+				url : "${pageContext.request.contextPath }/user/api/checkemail?email=" + email,
+				type: "get",
+				dataType: "json",
+				data: "",
+				success: this.onCheckEmailAjaxSuccess.bind( this ),
+				error: this.onCheckEmailAjaxError.bind( this )
+			} );	
+		},
+		onCheckEmailAjaxSuccess: function( response ) {
+			if(response.result == "fail"){
+				console.error(response.message);
+				return;
+			}
+			
+			if( response.data == true ) {
+				alert( "이미 존재하는 이메일 입니다. 다른 이메일을 사용해 주세요." );
+				// email 입력 창 비우고 포커싱
+				this.$inputTextEmail.val( "" ).focus();
+			} else {
+				this.$imageCheck.show();
+				this.$buttonCheckEmail.hide();
+			}		
+		},
+		onCheckEmailAjaxError: function( jqXHR, status, error ){
+			console.error( status + " : " + error );
+		},
+		onFormSubmit: function() {
+			//1. 이름
+			var $inputTextName = $( "#name" );
+			if( $inputTextName.val() === "" ) {
+				alert( "이름은 필수 항목입니다." );
+				$inputTextName.focus();
+				return false;
+			}
+			var $email = $( "#email" );
+			if( this.$inputTextEmail.val() === "" ) {
+				alert( "이메일은 필수 항목입니다." );
+				this.$inputTextEmail.focus();
+				return false;
+			}
+			
+			//3. 이메일 중복 체크 여부
+			if( this.$imageCheck.is( ":visible" ) === false ) {
+				alert( "이메일 중복 체크를 해 주세요." );
+				return false;
+			}
+			
+			//4. 비밀번호
+			var $inputPassword = $( "#password" );
+			if( $inputPassword.val() === "" ) {
+				alert( "비밀번호는 필수 항목입니다." );
+				$inputPassword.focus();
+				return false;
+			}
+			
+			//5. 약관동의
+			var $inputCheckBoxAgree = $( "#agree-prov" );
+			if( $inputCheckBoxAgree.is( ":checked" ) === false ) {
+				alert( "가입 약관에 동의 하셔야 합니다." );
+				$inputCheckBoxAgree.focus();
+				return false;
+			}		
+			// valid!
+			return true;				
+		}
+	}
+$(function(){
+	FormValidator.init();
 });
-
 </script>
 </head>
 <body>
@@ -94,7 +117,7 @@ $(function(){
 			<div id="user">
 
 				<form id="join-form" name="joinForm" method="post" action="${pageContext.servletContext.contextPath }/user/join">
-					<input type = "hidden" name = "a" value="join"/>
+					<input type = "hidden" name = "role" value="USER"/>
 					<label class="block-label" for="name">이름</label>
 					<input id="name" name="name" type="text" value="">
 

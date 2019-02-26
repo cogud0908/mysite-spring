@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StopWatch;
 
 import com.douzone.mysite.exception.UserDaoException;
 import com.douzone.mysite.vo.UserVo;
@@ -298,17 +299,18 @@ public class UserDao {
 //	}
 	
 	public UserVo login(String email, String password) {
-		
+
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("email", email);
 		map.put("password", password);
 		
 		UserVo userVo = sqlSession.selectOne("user.getByEmailAndPassword", map);
+		
 		return userVo;
 	}
 	
-	public UserVo get(String email) {
-		return sqlSession.selectOne("user.getByEmail",email);
+	public UserVo get(int no) {
+		return sqlSession.selectOne("user.getByEmail",no);
 	}
 
 	public int insert(UserVo vo) {
@@ -317,5 +319,9 @@ public class UserDao {
 	
 	public int update(UserVo vo) {
 		return sqlSession.update("user.modify", vo);
+	}
+
+	public UserVo get(String email) {
+		return sqlSession.selectOne("user.getEmail",email);
 	}
 }

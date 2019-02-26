@@ -337,5 +337,16 @@ public class GuestbookDao {
 		sqlSession.delete("guestbook.delete",vo);
 		return;
 	}
+
+	public List<GuestbookVo> getList(int page) {
+		List<GuestbookVo> list = sqlSession.selectList("guestbook.getlist-ajax",page);
+		return list;
+	}
+
+	public GuestbookVo ajaxinsert(GuestbookVo vo) {
+		sqlSession.insert("guestbook.insert",vo);
+		GuestbookVo guestbookvo = sqlSession.selectOne("guestbook.getOne-ajax");
+		return guestbookvo;
+	}
 	
 }
