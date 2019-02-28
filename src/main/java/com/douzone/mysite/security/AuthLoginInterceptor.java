@@ -28,7 +28,6 @@ public class AuthLoginInterceptor extends HandlerInterceptorAdapter {
 				
 		UserVo userVo = userService.login(email,password);
 		HttpSession session =  request.getSession(true);
-		System.out.println(userVo);
 				
 		if(userVo == null) {
 			session.setAttribute("result", "fail");

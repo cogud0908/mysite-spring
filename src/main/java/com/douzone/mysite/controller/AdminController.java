@@ -6,9 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.mysite.security.Auth;
 import com.douzone.mysite.security.Auth.Role;
+import com.douzone.mysite.service.FileuploadService;
 import com.douzone.mysite.service.SiteService;
 import com.douzone.mysite.vo.SiteVo;
 
@@ -17,6 +20,9 @@ import com.douzone.mysite.vo.SiteVo;
 @Controller
 public class AdminController {
 
+	@Autowired
+	private FileuploadService fileuploadService;
+	
 	@Autowired
 	private SiteService siteService;
 
@@ -48,12 +54,20 @@ public class AdminController {
 	
 	@Auth(Role.ADMIN)
 	@PostMapping("/main/update")
-	public String update(@ModelAttribute SiteVo siteVo, Model model) {
-		siteService.update(siteVo);
-		SiteVo vo = siteService.get();
+	public String update(@ModelAttribute SiteVo siteVo, Model model,
+			@RequestParam(value="upload-profile") MultipartFile multipartFile) {
+//		siteService.update(siteVo);
+//		SiteVo vo = siteService.get();
+//		
+//		model.addAttribute("siteVo",vo);
 		
-		model.addAttribute("siteVo",vo);
+		String profile = fileuploadService.restore(multipartFile);
+		siteVo.setProfile(profile);
+		
+		siteService.update(siteVo);
 		
 		return "redirect:/admin/main";
 	}
+	
+	
 }

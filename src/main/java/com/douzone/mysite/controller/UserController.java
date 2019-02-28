@@ -1,8 +1,15 @@
 package com.douzone.mysite.controller;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,13 +29,25 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value="/join", method=RequestMethod.GET)
-	public String join() {
+	@RequestMapping(value = "/join", method = RequestMethod.GET)
+	public String join(@ModelAttribute UserVo userVo) {
 		return "/user/join";
 	}
 
-	@RequestMapping(value="/join", method=RequestMethod.POST)
-	public String join(@ModelAttribute UserVo userVo) {
+	@RequestMapping(value = "/join", method = RequestMethod.POST)
+	public String join(@ModelAttribute @Valid UserVo userVo, BindingResult result, Model model) {
+
+		if (result.hasErrors()) {
+//			// 에러 출력
+//			List<ObjectError> list = result.getAllErrors();
+//			for (ObjectError e : list) {
+//				System.out.println(" ObjectError : " + e);
+//			}
+			
+			model.addAllAttributes(result.getModel());
+			return "user/join";
+		}
+
 		userService.join(userVo);
 		return "redirect:/user/joinsuccess";
 	}
@@ -37,7 +56,7 @@ public class UserController {
 	public String joinSuccess() {
 		return "/user/joinsuccess";
 	}
-	
+
 //	@RequestMapping(value="/login", method=RequestMethod.POST) 
 //	public ModelAndView login(HttpSession session, 
 //			@RequestParam("email") String email, @RequestParam("password") String password) {
@@ -55,12 +74,12 @@ public class UserController {
 //		}
 //		return mav;
 //	}
-	
-	@RequestMapping(value="/login", method=RequestMethod.GET) 
+
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "/user/login";
 	}
-	
+
 //	@RequestMapping(value="/logout", method=RequestMethod.GET)
 //	public String logout(HttpServletRequest request) {
 //		HttpSession session = request.getSession();
@@ -73,30 +92,30 @@ public class UserController {
 //		}
 //		return "redirect:/";
 //	}
-	
+
 	@Auth(Role.USER)
-	@GetMapping(value="/modify")
+	@GetMapping(value = "/modify")
 	public String modify(@AuthUser UserVo loginuser, Model model) {
-			
+
 		UserVo userVo = userService.getUser(loginuser.getNo());
-		model.addAttribute("userVo", userVo);		
-		
+		model.addAttribute("userVo", userVo);
+
 		return "/user/modify";
 	}
-	
+
 	@Auth(Role.USER)
-	@PostMapping(value="/modify")
+	@PostMapping(value = "/modify")
 	public String modify(@AuthUser UserVo loginuser, @ModelAttribute UserVo userVo) {
 
 		userVo.setNo(loginuser.getNo());
 		userService.modify(userVo);
-		
+
 		// session의 loginuser 변경
 		loginuser.setName(userVo.getName());
-						
+
 		return "/user/modifysuccess";
 	}
-	
+
 	@GetMapping("/modifysuccess")
 	public String modifySuccess() {
 		return "/user/modifysuccess";

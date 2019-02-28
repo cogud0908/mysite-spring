@@ -15,15 +15,15 @@
 		<div id="wrapper">
 			<div id="content">
 				<div id="site-form">
-					<form method="post" action="${pageContext.request.contextPath }/admin/main/update">
+					<form method="post" action="${pageContext.request.contextPath }/admin/main/update" enctype="multipart/form-data">
 						<label class="block-label" for="title">사이트 타이틀</label>
 						<input id="title" name="title" type="text" value="${siteVo.title }">
 						<label class="block-label" for="welcomeMessage">환영 메세지</label>
 						<input id="welcomeMessage" name="welcome" type="text" value="${siteVo.welcome }">
 
 						<label class="block-label">프로필 이미지</label>
-						<img id="profile" src="${pageContext.servletContext.contextPath}/assets/images/${siteVo.profile }">
-						<input type="file" name="profile">
+						<img id="profile" style="width:100px" onerror="this.src='${pageContext.request.contextPath }/assets/images/logo.jpg'" src="${pageContext.request.contextPath }/${siteVo.profile }">
+						<input type="file" name="upload-profile">
 
 						<label class="block-label">사이트 설명</label>
 						<textarea name="description">${siteVo.description}</textarea>
@@ -35,7 +35,10 @@
 
 				</div>
 			</div>
-			<c:import url="/WEB-INF/views/admin/include/navigation.jsp" />
+			
+			<c:import url="/WEB-INF/views/admin/include/navigation.jsp">
+				<c:param name="menu" value = "main"></c:param>
+			</c:import>
 		</div>
 	</div>
 </body>

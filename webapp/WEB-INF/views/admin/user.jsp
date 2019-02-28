@@ -20,7 +20,9 @@
 
 				</div>
 			</div>
-			<c:import url="/WEB-INF/views/admin/include/navigation.jsp" />
+			<c:import url="/WEB-INF/views/admin/include/navigation.jsp">
+				<c:param name="menu" value = "user"></c:param>
+			</c:import>
 		</div>
 	</div>
 </body>
