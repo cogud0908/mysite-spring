@@ -10,22 +10,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
 
 import com.douzone.mysite.dto.JSONResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-	
+
+	private static final Log LOG = LogFactory.getLog( GlobalExceptionHandler.class );
+
 	@ExceptionHandler(Exception.class)
 	public void handlerExcpetion(HttpServletRequest request, HttpServletResponse response ,Exception e) throws ServletException, IOException {
 		// 1. 로깅작업
 		StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors));
-		//LOG.error(errors.toString());
+		LOG.error(errors.toString());
 				
 		// 2. 시스템 오류 안내 페이지 전환
 //		ModelAndView mav = new ModelAndView();
